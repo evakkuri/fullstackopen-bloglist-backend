@@ -1,3 +1,4 @@
+### Success
 POST http://localhost:3001/api/blogs/
 content-type: application/json
 
@@ -6,4 +7,25 @@ content-type: application/json
   "author": "Elias Vakkuri",
   "url": "https://testurl",
   "likes": 0
+}
+
+### Success: without likes
+POST http://localhost:3001/api/blogs/
+content-type: application/json
+
+{
+  "title": "Test blog without likes",
+  "author": "Elias Vakkuri",
+  "url": "https://testurl"
+}
+
+### Error: negative likes
+POST http://localhost:3001/api/blogs/
+content-type: application/json
+
+{
+  "title": "Test blog",
+  "author": "Elias Vakkuri",
+  "url": "https://testurl",
+  "likes": -1
 }
