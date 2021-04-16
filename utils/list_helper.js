@@ -24,6 +24,7 @@ const favoriteBlog = (blogList) => {
       })
 }
 
+// 4.6
 const mostLikes = (blogList) => {
   if (blogList.length === 0) return {}
 
