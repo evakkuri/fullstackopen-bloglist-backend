@@ -3,6 +3,7 @@ const supertest = require('supertest')
 const helper = require('./test_helper')
 const app = require('../app')
 const api = supertest(app)
+const logger = require('../utils/logger')
 
 const Blog = require('../models/blog')
 
@@ -130,9 +131,29 @@ test('a blog can be deleted', async () => {
     helper.initialBlogs.length - 1
   )
 
-  const titles = blogsAtEnd.map(r => r.titles)
+  const titles = blogsAtEnd.map(r => r.title)
 
   expect(titles).not.toContain(blogToDelete.title)
+})
+
+test('a blog can be updated', async () => {
+  const blogsAtStart = await helper.blogsInDb()
+  const blogToUpdate = blogsAtStart[0]
+  const id = blogToUpdate.id
+
+  const updatedTitle = 'updated'
+  const updatedLikes = blogToUpdate.likes + 1
+  const updatedBlog = { ...blogToUpdate, title: updatedTitle, likes: updatedLikes }
+
+  await api
+    .put(`/api/blogs/${blogToUpdate.id}`)
+    .send(updatedBlog)
+    .expect(200)
+
+  const blogsAtEnd = await helper.blogsInDb()
+  const blogToCheck = blogsAtEnd.filter(blog => blog.id === id)[0]
+  expect(blogToCheck.title).toEqual(updatedTitle)
+  expect(blogToCheck.likes).toEqual(updatedLikes)
 })
 
 afterAll(() => {

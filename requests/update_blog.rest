@@ -1,0 +1,10 @@
+### Success
+PUT http://localhost:3001/api/blogs/6076f47dc9e6740608144a0d
+content-type: application/json
+
+{
+  "title": "Test blog",
+  "author": "Elias Vakkuri",
+  "url": "https://testurl",
+  "likes": 1
+}
