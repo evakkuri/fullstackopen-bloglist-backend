@@ -1,0 +1,17 @@
+POST http://localhost:3001/api/login
+content-type: application/json
+
+{
+  "username": "elias.vakkuri",
+  "password": "salasana"
+}
+
+### Fail scenario: invalid password
+
+POST http://localhost:3001/api/login
+content-type: application/json
+
+{
+  "username": "elias.vakkuri",
+  "password": "väärä"
+}
