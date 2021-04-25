@@ -5,7 +5,6 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImVsa
 
 {
   "title": "Test blog",
-  "author": "6081913578795d7cda43e536",
   "url": "https://testurl",
   "likes": 0
 }

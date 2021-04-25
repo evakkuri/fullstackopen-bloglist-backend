@@ -11,10 +11,11 @@ describe('when there is initially one user at db', () => {
   beforeEach(async () => {
     await User.deleteMany({})
 
-    const passwordHash = await bcrypt.hash('sekret', 10)
-    const user = new User({ username: 'root', passwordHash })
-
-    await user.save()
+    await Promise.all(helper.initialUsers.map(async (user) => {
+      await api
+        .post('/api/users')
+        .send(user)
+    }))
   })
 
   test('creation succeeds with a fresh username', async () => {
@@ -42,10 +43,11 @@ describe('when there is initially one user at db', () => {
   test('creation fails with proper statuscode and message if username already taken', async () => {
     const usersAtStart = await helper.usersInDb()
 
+    const testUser = helper.initialUsers[0]
     const newUser = {
-      username: 'root',
-      name: 'Superuser',
-      password: 'salainen',
+      username: testUser.username,
+      name: testUser.name,
+      password: 'newPassword',
     }
 
     const result = await api
@@ -88,10 +90,56 @@ describe('when there is initially one user at db', () => {
       .get('/api/users')
       .expect(200)
 
-    expect(result.body).toHaveLength(1)
+    expect(result.body).toHaveLength(helper.initialUsers.length)
   })
-})
 
-afterAll(() => {
-  mongoose.connection.close()
+  test('successful user login returns expected fields', async () => {
+    const testLogin = {
+      username: helper.initialUsers[0].username,
+      password: helper.initialUsers[0].password
+    }
+
+    const loginResult = await api
+      .post('/api/login')
+      .send(testLogin)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+
+    expect(loginResult.body.token).toBeDefined()
+    expect(loginResult.body.username).toBeDefined()
+  })
+
+  test('username not found returns 401 error', async () => {
+    const testLogin = {
+      username: 'doesnotexist',
+      password: helper.initialUsers[0].password
+    }
+
+    await api
+      .post('/api/login')
+      .send(testLogin)
+      .expect(401)
+      .expect('Content-Type', /application\/json/)
+  })
+
+  test('incorrect password returns 401 error', async () => {
+    const usersAtStart = await helper.usersInDb()
+    console.log(usersAtStart)
+
+    const testLogin = {
+      username: helper.initialUsers[0].username,
+      password: 'incorrectpassword'
+    }
+
+    await api
+      .post('/api/login')
+      .send(testLogin)
+      .expect(401)
+      .expect('Content-Type', /application\/json/)
+  })
+
+  afterAll(() => {
+    mongoose.connection.close()
+  })
+
 })

@@ -1,14 +1,44 @@
 const mongoose = require('mongoose')
+const bcrypt = require('bcrypt')
 const supertest = require('supertest')
 const helper = require('./test_helper')
 const app = require('../app')
 const api = supertest(app)
 
 const Blog = require('../models/blog')
+const User = require('../models/user')
+
+beforeAll(async () => {
+  await User.deleteMany({})
+
+  await Promise.all(helper.initialUsers.map(async (user) => {
+    await api
+      .post('/api/users')
+      .send(user)
+  }))
+})
 
 beforeEach(async () => {
   await Blog.deleteMany({})
-  await Blog.insertMany(helper.initialBlogs)
+
+  const testUserLogin = {
+    username: helper.initialUsers[0].username,
+    password: helper.initialUsers[0].password
+  }
+
+  const userLoginResponse = await api
+    .post('/api/login')
+    .send(testUserLogin)
+    .expect(200)
+
+  const token = userLoginResponse.body.token
+
+  await Promise.all(helper.initialBlogs.map(async (blog) => {
+    await api
+      .post('/api/blogs')
+      .set('Authorization', `Bearer ${token}`)
+      .send(blog)
+  }))
 })
 
 test('all blogs are returned as json', async () => {
@@ -36,12 +66,16 @@ test('ID fields in blog entries are named correctly', async () => {
 test('a specific blog can be viewed', async () => {
   const blogsAtStart = await helper.blogsInDb()
 
+  console.log(blogsAtStart)
+
   const blogToView = blogsAtStart[0]
 
   const resultBlog = await api
     .get(`/api/blogs/${blogToView.id}`)
     .expect(200)
     .expect('Content-Type', /application\/json/)
+
+  console.log(resultBlog.body)
 
   const processedBlogToView = JSON.parse(JSON.stringify(blogToView))
   expect(resultBlog.body).toEqual(processedBlogToView)
@@ -50,13 +84,25 @@ test('a specific blog can be viewed', async () => {
 test('a valid blog entry can be added ', async () => {
   const newBlog = {
     title: 'async/await simplifies making async calls',
-    author: 'Elias Vakkuri',
     url: 'http://testurl',
     likes: 5
   }
 
+  const testUserLogin = {
+    username: helper.initialUsers[1].username,
+    password: helper.initialUsers[1].password
+  }
+
+  const userLoginResponse = await api
+    .post('/api/login')
+    .send(testUserLogin)
+    .expect(200)
+
+  const token = userLoginResponse.body.token
+
   await api
     .post('/api/blogs')
+    .set('Authorization', `Bearer ${token}`)
     .send(newBlog)
     .expect(200)
     .expect('Content-Type', /application\/json/)
