@@ -1,5 +1,4 @@
 const mongoose = require('mongoose')
-const bcrypt = require('bcrypt')
 const supertest = require('supertest')
 const helper = require('./test_helper')
 const app = require('../app')
@@ -123,9 +122,6 @@ describe('when there is initially one user at db', () => {
   })
 
   test('incorrect password returns 401 error', async () => {
-    const usersAtStart = await helper.usersInDb()
-    console.log(usersAtStart)
-
     const testLogin = {
       username: helper.initialUsers[0].username,
       password: 'incorrectpassword'
