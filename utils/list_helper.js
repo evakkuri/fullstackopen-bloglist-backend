@@ -52,9 +52,24 @@ const mostBlogs = (blogList) => {
   return mostBlogsAuthor
 }
 
+// 4.7
+const mostLikes = (blogList) => {
+  const grouped = lodash.groupBy(blogList, 'author')
+
+  const summedLikes = Object.keys(grouped)
+    .map((authorKey) => {
+      return { author: authorKey, likes: lodash.sumBy(grouped[authorKey], 'likes') }
+    })
+
+  const mostLikedAuthor = lodash.maxBy(summedLikes, 'likes')
+
+  return mostLikedAuthor
+}
+
 module.exports = {
   dummy,
   totalLikes,
   favoriteBlog,
-  mostBlogs
+  mostBlogs,
+  mostLikes
 }
