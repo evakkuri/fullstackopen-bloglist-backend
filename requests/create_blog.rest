@@ -1,10 +1,11 @@
 ### Success
-POST http://localhost:3001/api/blogs/
+POST http://localhost:3003/api/blogs/
 content-type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImVsaWFzLnZha2t1cmkiLCJpZCI6IjYwODE5MTM1Nzg3OTVkN2NkYTQzZTUzNiIsImlhdCI6MTYxOTEwNTUxNn0.h1ghzvTGNf20y6NM5v301FTDneYcPEU5ZTO7X5oBJFk
+Authorization: Bearer <add token>
 
 {
   "title": "Test blog",
+  "author": "Test Author",
   "url": "https://testurl",
   "likes": 0
 }
