@@ -4,12 +4,13 @@ const User = require('../models/user')
 const { userExtractor } = require('../utils/middleware')
 
 blogsRouter.get('/', async (request, response) => {
-  const blogs = await Blog.find({}).populate('author', { username: 1, name: 1 })
+  const blogs = await Blog.find({}).populate('user', { username: 1, name: 1 })
   response.json(blogs.map(blog => blog.toJSON()))
 })
 
 blogsRouter.get('/:id', async (request, response) => {
   const blog = await Blog.findById(request.params.id)
+    .populate('user', { username: 1, name: 1 })
   if (blog) {
     response.json(blog.toJSON())
   } else {
@@ -24,7 +25,8 @@ blogsRouter.post('/', userExtractor, async (request, response) => {
 
   const blog = new Blog({
     title: body.title,
-    author: user.id,
+    author: body.author,
+    user: user.id,
     url: body.url,
     likes: ('likes' in body) ? body.likes : 0
   })
