@@ -3,12 +3,12 @@ content-type: application/json
 
 {
   "username": "elias.vakkuri",
-  "password": "<add password>"
+  "password": ""
 }
 
 ### Fail scenario: invalid password
 
-POST http://localhost:3001/api/login
+POST http://localhost:3003/api/login
 content-type: application/json
 
 {

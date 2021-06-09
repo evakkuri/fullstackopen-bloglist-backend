@@ -1,7 +1,7 @@
 ### Success
 POST http://localhost:3003/api/blogs/
 content-type: application/json
-Authorization: Bearer <add token>
+Authorization: Bearer 
 
 {
   "title": "Test blog",

@@ -11,6 +11,7 @@ const logger = require('./utils/logger')
 const mongoose = require('mongoose')
 
 logger.info('Connecting to MongoDB')
+logger.info(config.MONGODB_URI)
 
 mongoose.connect(config.MONGODB_URI, {
   useNewUrlParser: true,
@@ -22,7 +23,7 @@ mongoose.connect(config.MONGODB_URI, {
     logger.info('Connected to MongoDB')
   })
   .catch((error) => {
-    logger.error('Error connection to MongoDB:', error.message)
+    logger.error('Error connecting to MongoDB:', error.message)
   })
 
 app.use(cors())

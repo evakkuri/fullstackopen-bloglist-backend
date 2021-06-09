@@ -4,9 +4,9 @@
   "description": "Full Stack Open 2021 part 4",
   "main": "index.js",
   "scripts": {
-    "start": "cross-env NOTE_ENV=production node index.js",
+    "start": "cross-env NODE_ENV=production node index.js",
     "test": "cross-env NODE_ENV=test jest --verbose --runInBand",
-    "dev": "cross-env NODE_ENV=development nodemon index.js",
+    "dev": "cross-env NODE_ENV=dev nodemon index.js",
     "lint": "eslint ."
   },
   "author": "Elias Vakkuri",

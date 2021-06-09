@@ -42,7 +42,7 @@ blogsRouter.post('/', userExtractor, async (request, response) => {
 blogsRouter.delete('/:id', userExtractor, async (request, response) => {
   const blogToDelete = await Blog.findById(request.params.id)
 
-  if (blogToDelete.author.toString() !== request.user) {
+  if (blogToDelete.user.toString() !== request.user) {
     return response.status(400).json({
       error: 'Only the original author may delete a post'
     })
