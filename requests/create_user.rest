@@ -6,3 +6,14 @@ content-type: application/json
   "name": "Elias Vakkuri",
   "password": ""
 }
+
+### Test user with no stored blogs
+
+POST http://localhost:3003/api/users
+content-type: application/json
+
+{
+  "username": "test-no-blogs",
+  "name": "Test No Blogs",
+  "password": "test-no-blogs"
+}
